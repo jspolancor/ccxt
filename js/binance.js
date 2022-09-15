@@ -3050,7 +3050,7 @@ module.exports = class binance extends Exchange {
             }
         } else if ((uppercaseType === 'STOP_LOSS_LIMIT') || (uppercaseType === 'TAKE_PROFIT_LIMIT')) {
             quantityIsRequired = true;
-            stopPriceIsRequired = true;
+            stopPriceIsRequired = false;
             priceIsRequired = true;
             timeInForceIsRequired = true;
         } else if (uppercaseType === 'LIMIT_MAKER') {
