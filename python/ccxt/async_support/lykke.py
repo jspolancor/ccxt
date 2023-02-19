@@ -382,7 +382,7 @@ class lykke(Exchange):
         #         "timestamp":1643305510990
         #     }
         #
-        timestamp = self.safe_integer(ticker, 'timestamp')
+        timestamp = None  # temporary bug in lykke api, returns unrealistic numbers
         marketId = self.safe_string(ticker, 'assetPairId')
         market = self.safe_market(marketId, market)
         close = self.safe_string(ticker, 'lastPrice')
@@ -465,7 +465,7 @@ class lykke(Exchange):
         fetches price tickers for multiple markets, statistical calculations with the information calculated over the past 24 hours each market
         :param [str]|None symbols: unified symbols of the markets to fetch the ticker for, all market tickers are returned if not assigned
         :param dict params: extra parameters specific to the lykke api endpoint
-        :returns dict: an array of `ticker structures <https://docs.ccxt.com/en/latest/manual.html#ticker-structure>`
+        :returns dict: a dictionary of `ticker structures <https://docs.ccxt.com/en/latest/manual.html#ticker-structure>`
         """
         await self.load_markets()
         response = await self.publicGetTickers(params)
@@ -731,6 +731,7 @@ class lykke(Exchange):
             'side': side,
             'price': price,
             'stopPrice': None,
+            'triggerPrice': None,
             'amount': amount,
             'cost': cost,
             'average': None,

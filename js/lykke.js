@@ -385,7 +385,7 @@ module.exports = class lykke extends Exchange {
         //         "timestamp":1643305510990
         //     }
         //
-        const timestamp = this.safeInteger (ticker, 'timestamp');
+        const timestamp = undefined; // temporary bug in lykke api, returns unrealistic numbers
         const marketId = this.safeString (ticker, 'assetPairId');
         market = this.safeMarket (marketId, market);
         const close = this.safeString (ticker, 'lastPrice');
@@ -474,7 +474,7 @@ module.exports = class lykke extends Exchange {
          * @description fetches price tickers for multiple markets, statistical calculations with the information calculated over the past 24 hours each market
          * @param {[string]|undefined} symbols unified symbols of the markets to fetch the ticker for, all market tickers are returned if not assigned
          * @param {object} params extra parameters specific to the lykke api endpoint
-         * @returns {object} an array of [ticker structures]{@link https://docs.ccxt.com/en/latest/manual.html#ticker-structure}
+         * @returns {object} a dictionary of [ticker structures]{@link https://docs.ccxt.com/en/latest/manual.html#ticker-structure}
          */
         await this.loadMarkets ();
         const response = await this.publicGetTickers (params);
@@ -757,6 +757,7 @@ module.exports = class lykke extends Exchange {
             'side': side,
             'price': price,
             'stopPrice': undefined,
+            'triggerPrice': undefined,
             'amount': amount,
             'cost': cost,
             'average': undefined,

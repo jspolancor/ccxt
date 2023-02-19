@@ -391,7 +391,7 @@ module.exports = class novadax extends Exchange {
          * @description fetches price tickers for multiple markets, statistical calculations with the information calculated over the past 24 hours each market
          * @param {[string]|undefined} symbols unified symbols of the markets to fetch the ticker for, all market tickers are returned if not assigned
          * @param {object} params extra parameters specific to the novadax api endpoint
-         * @returns {object} an array of [ticker structures]{@link https://docs.ccxt.com/en/latest/manual.html#ticker-structure}
+         * @returns {object} a dictionary of [ticker structures]{@link https://docs.ccxt.com/en/latest/manual.html#ticker-structure}
          */
         await this.loadMarkets ();
         symbols = this.marketSymbols (symbols);
@@ -599,7 +599,7 @@ module.exports = class novadax extends Exchange {
         const market = this.market (symbol);
         const request = {
             'symbol': market['id'],
-            'unit': this.timeframes[timeframe],
+            'unit': this.safeString (this.timeframes, timeframe, timeframe),
         };
         const duration = this.parseTimeframe (timeframe);
         const now = this.seconds ();
@@ -1088,6 +1088,7 @@ module.exports = class novadax extends Exchange {
             'side': side,
             'price': price,
             'stopPrice': stopPrice,
+            'triggerPrice': stopPrice,
             'amount': amount,
             'cost': cost,
             'average': average,
@@ -1154,11 +1155,13 @@ module.exports = class novadax extends Exchange {
         //
         const id = this.safeString (transfer, 'data');
         const status = this.safeString (transfer, 'message');
+        const currencyCode = this.safeCurrencyCode (undefined, currency);
         return {
             'info': transfer,
             'id': id,
             'amount': undefined,
-            'code': this.safeCurrencyCode (undefined, currency),
+            'code': currencyCode, // kept here for backward-compatibility, but will be removed soon
+            'currency': currencyCode,
             'fromAccount': undefined,
             'toAccount': undefined,
             'timestamp': undefined,
